@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Srivibha Exports</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+</head>body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f5f7fa;
+}
+
+header {
+    background: #0A1F44;
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    margin: 0;
+    color: #D4AF37;
+}
+
+nav button {
+    margin: 5px;
+    padding: 8px 12px;
+    background: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+nav button:hover {
+    background: #D4AF37;
+    color: white;
+}
+
+section {
+    display: none;
+    padding: 30px;
+}
+
+section.active {
+    display: block;
+}
+
+.hero {
+    text-align: center;
+    padding: 60px;
+    background: linear-gradient(to right, #0A1F44, #1e3c72);
+    color: white;
+    border-radius: 10px;
+}
+
+.gold-btn {
+    background: #D4AF37;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.gold-btn:hover {
+    opacity: 0.9;
+}
+
+.product-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.product {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 3px 8px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.product h3 {
+    color: #0A1F44;
+}
+
+.product button {
+    margin-top: 10px;
+}
+
+#cart-items div {
+    background: white;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+
+.role-buttons button {
+    margin: 10px;
+    padding: 10px 20px;
+}
+
+#login-form {
+    margin-top: 20px;
+}
+
+#login-form input {
+    display: block;
+    margin: 10px auto;
+    padding: 8px;
+    width: 200px;
+}
+
+footer {
+    text-align: center;
+    padding: 15px;
+    background: #0A1F44;
+    color: white;
+    margin-top: 40px;
+}
+
+<header>
+    <h1>Srivibha Exports</h1>
+    <nav>
+        <button onclick="showSection('home')">Home</button>
+        <button onclick="showSection('products')">Products</button>
+        <button onclick="showSection('cart')">
+            Cart (<span id="cart-count">0</span>)
+        </button>
+        <button onclick="showSection('login')">Login</button>
+    </nav>
+</header>
+
+<section id="home" class="active">
+    <div class="hero">
+        <h2>Delivering Quality Globally 🌍</h2>
+        <p>Your trusted export partner</p>
+        <button onclick="showSection('products')" class="gold-btn">
+            Explore Products
+        </button>
+    </div>
+</section>
+
+<section id="products">
+    <h2>Our Products</h2>
+    <div class="product-container" id="product-list"></div>
+</section>
+
+<section id="cart">
+    <h2>Your Cart</h2>
+    <div id="cart-items"></div>
+    <h3>Total: ₹ <span id="total-price">0</span></h3>
+    <button class="gold-btn">Proceed to Checkout</button>
+</section>
+
+<section id="login">
+    <h2>Select Role</h2>
+    <div class="role-buttons">
+        <button onclick="loginRole('Customer')">Customer</button>
+        <button onclick="loginRole('Worker')">Worker</button>
+        <button onclick="loginRole('Admin')">Admin</button>
+    </div>
+
+    <div id="login-form">
+        <input type="text" placeholder="Enter Username">
+        <input type="password" placeholder="Enter Password">
+        <button class="gold-btn">Login</button>
+    </div>
+
+    <p id="role-display"></p>
+</section>
+
+<footer>
+    <p>© 2026 Srivibha Exports. All Rights Reserved.</p>
+</footer>
+let products = [
+    { id: 1, name: "Premium Rice", price: 1200 },
+    { id: 2, name: "Organic Spices", price: 800 },
+    { id: 3, name: "Export Quality Pulses", price: 950 },
+    { id: 4, name: "Fresh Groundnuts", price: 700 }
+];
+
+let cart = [];
+
+function showSection(sectionId) {
+    document.querySelectorAll("section").forEach(section => {
+        section.classList.remove("active");
+    });
+    document.getElementById(sectionId).classList.add("active");
+}
+
+function displayProducts() {
+    const productList = document.getElementById("product-list");
+    productList.innerHTML = "";
+
+    products.forEach(product => {
+        const div = document.createElement("div");
+        div.classList.add("product");
+        div.innerHTML = `
+            <h3>${product.name}</h3>
+            <p>₹ ${product.price}</p>
+            <button onclick="addToCart(${product.id})" class="gold-btn">
+                Add to Cart
+            </button>
+        `;
+        productList.appendChild(div);
+    });
+}
+
+function addToCart(id) {
+    const product = products.find(p => p.id === id);
+    cart.push(product);
+    updateCart();
+}
+
+function updateCart() {
+    const cartItems = document.getElementById("cart-items");
+    const totalPrice = document.getElementById("total-price");
+    const cartCount = document.getElementById("cart-count");
+
+    cartItems.innerHTML = "";
+    let total = 0;
+
+    cart.forEach(item => {
+        total += item.price;
+        cartItems.innerHTML += `
+            <div>${item.name} - ₹ ${item.price}</div>
+        `;
+    });
+
+    totalPrice.textContent = total;
+    cartCount.textContent = cart.length;
+}
+
+function loginRole(role) {
+    document.getElementById("role-display").innerText =
+        `Logged in as: ${role}`;
+}
+
+displayProducts();
+
+<script src="script.js"></script>
+</body>
+</html>
